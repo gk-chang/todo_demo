@@ -4,17 +4,21 @@
   <main>
     <div class="container">
       <h1>欢迎使用</h1>
-      <todo-add></todo-add>
-      <todo-filer></todo-filer>
-      <todo-list></todo-list>
+      <!-- <todo-add></todo-add> -->
+      <todo-add :tid="todos.length" @add-todo="addTodo" />
+      <todo-filer :selected="filter" @change-filter="filter = $event" />
+      <todo-list :todos="filteredTodos" />
     </div>
   </main>
 </template>
 
 <script>
+// import { ref, computed } from 'vue';
 import TodoAdd from './components/TodoAdd.vue'
 import TodoFiler from './components/TodoFiler.vue'
 import TodoList from './components/TodoList.vue'
+import useTodos from "./components/composables/useTodos.js";
+import useFilteredTodos from "./components/composables/useFilteredTodos.js";
 // import HelloWorld from './components/HelloWorld.vue'
 
 export default {
@@ -24,6 +28,18 @@ export default {
     TodoFiler,
     TodoList
     // HelloWorld
+  },
+  setup() {
+    const {todos, addTodo} = useTodos();
+    const {filter, filteredTodos} = useFilteredTodos(todos);
+
+    return {
+      todos,
+      addTodo,
+      filter,
+      filteredTodos,
+    }
+    
   }
 }
 </script>

@@ -1,15 +1,38 @@
 <template>
     <div class="input-add">
-        <input type="text" name="todo" />
-        <buttun>
+        <input type="text" name="todo" v-model="todoContent" @keyup.enter="emitAddTodo" />
+        <button @click="emitAddTodo">
           <i class="plus"></i>
-        </buttun>
+        </button>
     </div>
 </template>
 
 <script>
+import { ref } from "vue";
 export default {
-    name: "TodoAdd"
+    name: "TodoAdd",
+    setup(props, context){
+        return useEmitAddTodo(props.tid, context.emit)
+    },
+}
+
+function useEmitAddTodo(tid, emit) {
+    const todoContent = ref("");
+
+    const emitAddTodo = () => {
+        const todo = {
+            id: tid,
+            content: todoContent.value,
+            completed: false,
+        };
+        emit("add-todo", todo);
+        todoContent.value = "";
+    };
+
+    return {
+        todoContent,
+        emitAddTodo,
+    };
 }
 </script>
 
@@ -37,6 +60,7 @@ export default {
   background: linear-gradient(#c0a5f3, #7f95f7);
   border:none;
   outline: none;
+
   color: white;
   position: absolute;
   right: 0;
@@ -45,7 +69,7 @@ export default {
 }
 
 .input-add .plus {
-  display:block;
+  display: block;
   width: 100%;
   height: 100%;
   background: linear-gradient(#fff,#fff), linear-gradient(#fff, #fff);
